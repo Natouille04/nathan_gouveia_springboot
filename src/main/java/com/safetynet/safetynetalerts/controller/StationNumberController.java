@@ -7,11 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.safetynet.safetynetalerts.dto.FirestationResponseDTO;
 import com.safetynet.safetynetalerts.service.StationNumberService;
 
-import java.util.Set;
-
 @RestController
 public class StationNumberController {
-
     private final StationNumberService stationNumberService;
 
     public StationNumberController(StationNumberService stationNumberService) {

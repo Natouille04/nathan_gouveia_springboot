@@ -59,7 +59,9 @@ public class StationNumberService {
 
                     if (age <= 18) {
                         childCount.getAndIncrement();
-                    } else {
+                    }
+
+                    else {
                         adultCount.getAndIncrement();
                     }
                 });
