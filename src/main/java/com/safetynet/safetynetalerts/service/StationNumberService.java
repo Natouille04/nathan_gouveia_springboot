@@ -16,17 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class StationNumberService {
-    private final List<Person> persons;
-    private final List<Firestation> firestation;
-    private final List<MedicalRecord> medicalRecord;
+    private final DataRepository dataRepository;
 
     public StationNumberService(DataRepository dataRepository) {
-        persons = dataRepository.getPersonList();
-        firestation = dataRepository.getFireStationList();
-        medicalRecord = dataRepository.getMedicalRecordList();
+        this.dataRepository = dataRepository;
     }
 
     public FirestationResponseDTO PersonByFireStation(int FireStationNumber) {
+        List<Person> persons = dataRepository.getPersonList();
+        List<Firestation> firestation = dataRepository.getFireStationList();
+        List<MedicalRecord> medicalRecord = dataRepository.getMedicalRecordList();
+
         // Déclaration des variables : DTO, liste de personnes, formateur de date, compteurs adultes/enfants
         FirestationResponseDTO FirestationDTO = new FirestationResponseDTO();
         List<PersonInfoDTO> PersonDTOList = new java.util.ArrayList<>(List.of());

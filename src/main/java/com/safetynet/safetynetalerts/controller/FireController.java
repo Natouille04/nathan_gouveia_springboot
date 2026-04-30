@@ -2,11 +2,10 @@ package com.safetynet.safetynetalerts.controller;
 
 import com.safetynet.safetynetalerts.dto.FireResponseDTO;
 import com.safetynet.safetynetalerts.service.FireService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class FireController {
@@ -17,7 +16,7 @@ public class FireController {
     }
 
     @GetMapping("/fire")
-    public FireResponseDTO phoneAlert(@RequestParam(name = "address", defaultValue = "") String param) {
+    public FireResponseDTO fire(@RequestParam(name = "address", defaultValue = "") String param) {
         return fireService.PeopleByAddress(param);
     }
 }
