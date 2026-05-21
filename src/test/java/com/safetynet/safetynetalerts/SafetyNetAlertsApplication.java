@@ -1,13 +1,11 @@
-package com.natouille.springbootfirstapp;
+package com.safetynet.safetynetalerts;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringbootfirstappApplicationTests {
-
+class SafetyNetAlertsApplication {
 	@Test
 	void contextLoads() {
 	}
-
 }
