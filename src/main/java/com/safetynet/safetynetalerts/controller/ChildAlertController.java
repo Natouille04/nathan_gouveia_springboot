@@ -21,6 +21,8 @@ public class ChildAlertController {
         this.childAlertService = ChildAlertService;
     }
 
+    // Endpoint GET /ChildAlert : Retourne la liste des enfants habitant a l'adresse demandée
+
     @GetMapping("/childAlert")
     public List<ChildAlertResponseDTO> childAlert(@RequestParam(name = "address", defaultValue = "") String param) {
         logger.info("GET childAlert called with param : {}", param);

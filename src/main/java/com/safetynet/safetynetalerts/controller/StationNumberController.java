@@ -18,6 +18,8 @@ public class StationNumberController {
         this.stationNumberService = stationNumberService;
     }
 
+    // Endpoint GET /firestation : Retourne une liste de personnes sélectionnée via le numéro de station donnée en paramètre
+
     @GetMapping("/firestation")
     public FirestationResponseDTO firestation(@RequestParam(name = "stationNumber", defaultValue = "0") int param) {
         logger.info("GET firestation called with param : {}", param);

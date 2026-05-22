@@ -22,6 +22,8 @@ public class StationsController {
         this.stationsService = stationsService;
     }
 
+    // Endpoint GET /firestation : Retourne une liste d'adresse sélectionnée via le numéro de station donnée en paramètre
+
     @GetMapping("/flood/stations")
     public List<AddressDTO> stations(@RequestParam(name = "stations", defaultValue = "") int param) {
         logger.info("GET flood/stations called with param : {}", param);

@@ -35,11 +35,13 @@ public class DataRepository {
         logger.info("Saving data to file...");
         ObjectMapper mapper = new ObjectMapper();
 
+        // On crée un objet qu'on injecte avec nos données modifiées
         Map<String, Object> data = new HashMap<>();
         data.put("persons", personList);
         data.put("firestations", fireStationList);
         data.put("medicalrecords", medicalRecordList);
 
+        // On écrit les données dans un nouveau fichier (data-update.json).
         mapper.writerWithDefaultPrettyPrinter()
                 .writeValue(new File("src/main/resources/data-update.json"), data);
 
@@ -47,9 +49,12 @@ public class DataRepository {
     }
 
     public DataRepository() throws IOException {
+        // On ouvre le fichier de données
         ObjectMapper mapper = new ObjectMapper();
         JsonNode json = mapper.readTree(new File("src/main/resources/data.json"));
 
+
+        // On assigne les données du fichier à des variables locales qu'on va pouvoir lire et modifiée
         this.personList = mapper.convertValue(json.get("persons"), new TypeReference<>() {});
         this.fireStationList = mapper.convertValue(json.get("firestations"), new TypeReference<>() {});
         this.medicalRecordList = mapper.convertValue(json.get("medicalrecords"), new TypeReference<>() {});
@@ -64,15 +69,25 @@ public class DataRepository {
     // --- CREATE functions --- //
 
     public void addPersonToList(Person person) throws IOException {
+        // On vérifie que la personne n'éxiste pas déja
         boolean exists = personList.stream()
                 .filter(p -> p.getFirstName().equals(person.getFirstName()))
                 .anyMatch(p -> p.getLastName().equals(person.getLastName()));
 
+        // Si ce n'est pas le cas, on l'ajoute au fichier
         if (!exists) {
             personList.add(person);
-            saveToFile();
+
+            try {
+                saveToFile();
+            }
+
+            catch (IOException e) {
+                throw new RuntimeException("Failed to persist data to file", e);
+            }
         }
 
+        // Sinon, on renvoie une erreur à l'utilisateur
         if (exists) {
             throw new IllegalArgumentException("Person already exists: "
                     + person.getFirstName() + " " + person.getLastName());
@@ -82,8 +97,10 @@ public class DataRepository {
 
 
     public void addFirestationToList(Firestation firestation) throws IOException {
+        // On vérifie que la station n'éxiste pas déja
         boolean exists = fireStationList.stream().anyMatch(s -> s.getAddress().equals(firestation.getAddress()));
 
+        // Si ce n'est pas le cas, on l'ajoute au fichier
         if (!exists) {
             fireStationList.add(firestation);
 
@@ -96,16 +113,19 @@ public class DataRepository {
             }
         }
 
+        // Sinon, on renvoie une erreur à l'utilisateur
         if (exists) {
             throw new IllegalArgumentException("Station already exists: " + firestation.getAddress());
         }
     }
 
     public void addMedicalRecordToList(MedicalRecord medicalRecord) throws IOException {
+        // On vérifie que le dossier médical n'éxiste pas déja
         boolean exists = medicalRecordList.stream()
                 .filter(m -> m.getFirstName().equals(medicalRecord.getFirstName()))
                 .anyMatch(m -> m.getLastName().equals(medicalRecord.getLastName()));
 
+        // Si ce n'est pas le cas, on l'ajoute au fichier
         if (!exists) {
             medicalRecordList.add(medicalRecord);
 
@@ -118,6 +138,7 @@ public class DataRepository {
             }
         }
 
+        // Sinon, on renvoie une erreur à l'utilisateur
         if (exists) {
             throw new IllegalArgumentException("Medical Record already exists: " + medicalRecord.getFirstName() + " " + medicalRecord.getLastName());
         }
@@ -126,14 +147,17 @@ public class DataRepository {
     // --- UPDATE functions --- //
 
     public void updatePerson(String firstName, String lastName, PersonUpdateDTO dto) {
+        // On vérifie que la personne existe déja
         boolean exists = personList.stream()
                 .filter(p -> p.getFirstName().equals(firstName))
                 .anyMatch(p -> p.getLastName().equals(lastName));
 
+        // Si ce n'est pas le cas, on renvoie une erreur 404 à l'utilisateur
         if (!exists) {
             throw new RuntimeException("Person not found: " + firstName + " " + lastName);
         }
 
+        // Sinon, on modifie les données demandées, puis on enregistre les modifications
         personList.forEach(p -> {
             if (Objects.equals(p.getFirstName(), firstName)) {
                 if (Objects.equals(p.getLastName(), lastName)) {
@@ -156,14 +180,17 @@ public class DataRepository {
     }
 
     public void updateFireStation(String address, FireStationUpdateDTO firestation) {
+        // On vérifie que la station existe déja
         boolean exists = fireStationList.stream().anyMatch(f ->
                 f.getAddress().equals(address)
         );
 
+        // Si ce n'est pas le cas, on renvoie une erreur 404 à l'utilisateur
         if (!exists) {
             throw new RuntimeException("Address not found: " + address);
         }
 
+        // Sinon, on modifie les données demandées, puis on enregistre les modifications
         fireStationList.forEach(f -> {
             if (Objects.equals(f.getAddress(), address)) {
                 if (firestation.getAddress() != null) f.setAddress(firestation.getAddress());
@@ -181,14 +208,17 @@ public class DataRepository {
     }
 
     public void updateMedicalRecord(String firstName, String lastName, MedicalUpdateDTO dto) {
+        // On vérifie que le dossier médical existe déja
         boolean exists = medicalRecordList.stream()
                 .filter(m -> m.getFirstName().equals(firstName))
                 .anyMatch(m -> m.getLastName().equals(lastName));
 
+        // Si ce n'est pas le cas, on renvoie une erreur 404 à l'utilisateur
         if (!exists) {
             throw new RuntimeException("Person not found: " + firstName + " " + lastName);
         }
 
+        // Sinon, on modifie les données demandées, puis on enregistre les modifications
         medicalRecordList.forEach(m -> {
             if (Objects.equals(m.getFirstName(), firstName))
                 if (Objects.equals(m.getLastName(), lastName)) {
@@ -210,14 +240,17 @@ public class DataRepository {
     // --- DELETE functions --- //
 
     public void deletePerson(String firstName, String lastName) {
+        // On récupère l'index de la personne en vérifiant qu'elle existe
         int index = IntStream.range(0, personList.size())
                 .filter(i -> personList.get(i).getFirstName().equals(firstName))
                 .filter(i -> personList.get(i).getLastName().equals(lastName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Person not found: " + firstName + " " + lastName));
+                .orElseThrow(() -> new RuntimeException("Person not found: " + firstName + " " + lastName)); // Sinon, on renvoie une erreur 404.
 
+        // On supprime la personne demandée selon son index
         personList.remove(index);
 
+        // Puis, on enregistre les modifications dans le fichier
         try {
             saveToFile();
         }
@@ -228,13 +261,16 @@ public class DataRepository {
     }
 
     public void deleteFireStation(String address) {
+        // On récupère l'index de la station en vérifiant qu'elle existe
         int index = IntStream.range(0, fireStationList.size())
-                .filter(i -> fireStationList.get(i).getAddress().equals(address))  // ← added closing )
+                .filter(i -> fireStationList.get(i).getAddress().equals(address))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Fire Station not found: " + address));
+                .orElseThrow(() -> new RuntimeException("Fire Station not found: " + address)); // Sinon, on renvoie une erreur 404.
 
+        // On supprime la station demandée selon son index
         fireStationList.remove(index);
 
+        // Puis, on enregistre les modifications dans le fichier
         try {
             saveToFile();
         }
@@ -245,14 +281,17 @@ public class DataRepository {
     }
 
     public void deleteMedicalRecord(String firstName, String lastName) {
+        // On récupère l'index de la station en vérifiant qu'elle existe
         int index = IntStream.range(0, medicalRecordList.size())
                 .filter(i -> medicalRecordList.get(i).getFirstName().equals(firstName))
                 .filter(i -> medicalRecordList.get(i).getLastName().equals(lastName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Medical Record not found: " + firstName + " " + lastName));
+                .orElseThrow(() -> new RuntimeException("Medical Record not found: " + firstName + " " + lastName)); // Sinon, on renvoie une erreur 404.
 
+        // On supprime la station demandée selon son index
         medicalRecordList.remove(index);
 
+        // Puis, on enregistre les modifications dans le fichier
         try {
             saveToFile();
         }

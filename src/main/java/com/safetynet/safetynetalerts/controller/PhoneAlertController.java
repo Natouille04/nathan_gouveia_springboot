@@ -18,6 +18,8 @@ public class PhoneAlertController {
         this.phoneAlertService = phoneAlertService;
     }
 
+    // Endpoint GET /phoneAlert : Retourne une liste de numéro de téléphones sélectionné via le numéro de station donnée en paramètre
+
     @GetMapping("/phoneAlert")
     public List<String> phoneAlert(@RequestParam(name = "firestation", defaultValue = "0") int param) {
         logger.info("GET phoneAlert called with param : {}", param);

@@ -21,6 +21,8 @@ public class MedicalRecordController {
         this.medicalRecordService = medicalRecordService;
     }
 
+    // Endpoint POST /medicalRecord : Ajoute un dossier médical selon les informations données dans le corps de la requète
+
     @PostMapping("/medicalRecord")
     public ResponseEntity<Void> addMedicalRecord(@RequestBody MedicalRecord newMedicalRecord) {
         logger.info("POST medicalRecord called with RequestBody");
@@ -32,6 +34,8 @@ public class MedicalRecordController {
         logger.error("POST ERROR medicalRecord : Conflict with already existing data");
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
+
+    // Endpoint PATCH /medicalRecord : Modifie un dossier médical selon les informations données dans le corps de la requète
 
     @PatchMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> updateMedicalRecord(
@@ -49,6 +53,8 @@ public class MedicalRecordController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Endpoint DELETE /medicalRecord : Supprime un dossier médical selon les informations données dans le paramètre de la requète
 
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<Void> deleteMedicalRecord(

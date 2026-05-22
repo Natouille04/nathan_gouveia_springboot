@@ -20,6 +20,7 @@ public class PersonsService {
     }
 
     public boolean save(Person person) {
+        // On essaye d'enregistrer la personne avec le dataRepository
         try {
             logger.debug("Saving person to list...");
             dataRepository.addPersonToList(person);
@@ -27,6 +28,7 @@ public class PersonsService {
             return true;
         }
 
+        // S'il y a une erreur, on renvoie false
         catch (Exception e) {
             logger.error("Error while saving person");
             return false;
@@ -34,6 +36,7 @@ public class PersonsService {
     }
 
     public Person update(String firstName, String lastName, PersonUpdateDTO dto) {
+        // On essaye de modifier la personne avec le dataRepository
         try {
             logger.debug("Updating person with first name '{}' and last name '{}'", firstName, lastName);
             dataRepository.updatePerson(firstName, lastName, dto);
@@ -45,6 +48,7 @@ public class PersonsService {
                     .orElseThrow(() -> new RuntimeException("Person not found after update: " + firstName + " " + lastName));
         }
 
+        // S'il y a une erreur, on renvoie une Runtime Exception
         catch (Exception e) {
             logger.error("Error while updating person");
             throw new RuntimeException(e);
@@ -52,6 +56,7 @@ public class PersonsService {
     }
 
     public boolean delete(String firstName, String lastName) {
+        // On essaye de supprimer la personne avec le dataRepository
         try {
             logger.debug("Deleting person with first name '{}' and last name '{}'", firstName, lastName);
             dataRepository.deletePerson(firstName, lastName);
@@ -60,6 +65,7 @@ public class PersonsService {
             return true;
         }
 
+        // S'il y a une erreur, on renvoie une Runtime Exception
         catch (Exception e) {
             logger.error("Error while deleting person");
             throw new RuntimeException(e);

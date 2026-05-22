@@ -31,6 +31,7 @@ public class FireService {
     }
 
     public FireResponseDTO PeopleByAddress(String Address) {
+        // Initialisation de la réponse
         FireResponseDTO Response = new FireResponseDTO();
         List<PersonMedInfoDTO> PersonsMedInfos = new ArrayList<>();
 
@@ -38,16 +39,19 @@ public class FireService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate now = LocalDate.now();
 
+        // Récupérations des listes / Persons - FireStation - MedicalRecord
         logger.debug("Parsing Persons, FireStations and MedicalRecords list");
         List<Person> Persons = dataRepository.getPersonList();
         List<Firestation> Firestations = dataRepository.getFireStationList();
         List<MedicalRecord> MedicalRecords = dataRepository.getMedicalRecordList();
 
+        // Filtrage des personnes avec l'adresse en parametre
         logger.debug("Filtering list with chosen address");
         List<Person> PersonsAtAddress = Persons.stream()
                 .filter(p -> Objects.equals(p.getAddress(), Address))
                 .toList();
 
+        // On crée un dossier médical pour chaque personne à l'adresse
         logger.debug("Creating Medical record file for each persons");
         PersonsAtAddress.forEach(p -> {
             PersonMedInfoDTO PersonInfo = new PersonMedInfoDTO();
@@ -69,9 +73,11 @@ public class FireService {
             PersonsMedInfos.add(PersonInfo);
         });
 
+        // On récupère le numéro de la station associée a l'adresse
         logger.debug("Getting Fire Station using chosen address");
         Firestation firestation = Firestations.stream().filter(f -> Objects.equals(f.getAddress(), Address)).toList().get(0);
 
+        // On remplie la réponse avec nos données
         logger.debug("Setting up response");
         Response.setPersonsMedInfos(PersonsMedInfos);
         Response.setStationNumber(parseInt(firestation.getStation()));

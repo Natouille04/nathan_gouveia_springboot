@@ -18,6 +18,8 @@ public class FireStationsController {
         this.fireStationsService = fireStationsService;
     }
 
+    // Endpoint POST /fireStation : Ajoute une station de pompier selon les informations donnée dans le corps de la requète
+
     @PostMapping("/fireStation")
     public ResponseEntity<Void> addFireStation(@RequestBody Firestation newfirestation) {
         logger.info("POST fireStation called with Request body");
@@ -29,6 +31,8 @@ public class FireStationsController {
         logger.error("POST ERROR fireStation : Conflict with already existing data");
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
+
+    // Endpoint PATCH /fireStation : Modifie une station de pompier selon les informations donnée dans le corps de la requète
 
     @PatchMapping("/fireStation")
     public ResponseEntity<Firestation> updateFireStation(
@@ -46,6 +50,8 @@ public class FireStationsController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Endpoint DELETE /fireStation : Supprime une station de pompier selon les informations donnée dans le parametre de la requète
 
     @DeleteMapping("/fireStation")
     public ResponseEntity<Void> deleteFireStation(@RequestParam String address) {

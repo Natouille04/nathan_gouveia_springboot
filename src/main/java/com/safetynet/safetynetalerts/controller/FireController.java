@@ -18,6 +18,8 @@ public class FireController {
         this.fireService = fireService;
     }
 
+    // Endpoint GET /fire : Retourne une liste de personnes selon l'adresse spécifiée en paramètre
+
     @GetMapping("/fire")
     public FireResponseDTO fire(@RequestParam(name = "address", defaultValue = "") String param) {
         logger.info("GET fire called with param : {}", param);

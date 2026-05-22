@@ -26,29 +26,36 @@ public class ChildAlertService {
     }
 
     public List<ChildAlertResponseDTO> GetChildrenByAddress(String Address) {
+        // Initialisation de la réponse
         List<ChildAlertResponseDTO> response = new ArrayList<>();
 
+        // Récupérations des listes / Persons - MedicalRecord
         logger.debug("Parsing Persons list and Medical record list");
         List<Person> persons = dataRepository.getPersonList();
         List<MedicalRecord> medicalRecord = dataRepository.getMedicalRecordList();
 
+        // Définition du formater pour la date
         logger.debug("Defining DateTime formatter");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
+        // Filtrage des personnes avec l'adresse en parametre
         logger.debug("Filtering list with chosen address");
         List<Person> personsAtAddress = persons.stream()
                 .filter(p -> Objects.equals(p.getAddress(), Address))
                 .toList();
 
+        // On renvoie une liste vide si personnes n'habite à l'adresse demandée
         if (personsAtAddress.isEmpty()) {
             logger.debug("No one at chosen address, returning empty list");
             return List.of();
         }
 
+        // On filtre pour garder uniquement les enfants ( - de 18 ans )
         logger.debug("Filtering people only for children");
         personsAtAddress.forEach(p -> {
                     ChildAlertResponseDTO ResponseDTO = new ChildAlertResponseDTO();
 
+                    // ON utilise le dossier médical de la personne pour déterminer son âge
                     List<MedicalRecord> MedRec = medicalRecord.stream()
                             .filter(m -> Objects.equals(m.getFirstName(), p.getFirstName()))
                             .filter(m -> Objects.equals(m.getLastName(), p.getLastName()))
@@ -59,8 +66,10 @@ public class ChildAlertService {
                     LocalDate birthdate = LocalDate.parse(MedRec.get(0).getBirthdate(), formatter);
                     LocalDate now = LocalDate.now();
 
+                    // On compare la date de naissance de la personne à la date actuelle
                     int age = Period.between(birthdate, now).getYears();
 
+                    // Si le résultat est égal ou inférieur a 18 ans, on enregistre la personne dans la réponse
                     if(age <= 18) {
                         List<HouseHoldMemberDTO> householdMembers = new ArrayList<>();
 
@@ -74,6 +83,7 @@ public class ChildAlertService {
                             householdMembers.add(member);
                         });
 
+                        // On remplie la réponse avec les infos de l'enfant
                         ResponseDTO.setFirstName(p.getFirstName());
                         ResponseDTO.setLastName(p.getLastName());
                         ResponseDTO.setAge(age);

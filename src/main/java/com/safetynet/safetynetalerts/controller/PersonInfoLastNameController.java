@@ -19,6 +19,8 @@ public class PersonInfoLastNameController {
         this.personInfoLastNameService = personInfoLastNameService;
     }
 
+    // Endpoint GET /personInfoLastName : Retourne les informations d'une ou plusieurs personnes sélectionnées via le nom de famille donnée en paramètre
+
     @GetMapping("/personInfoLastName")
     public List<PersonInfoLastNameResponseDTO> personInfoLastName(@RequestParam(name = "lastName", defaultValue = "") String param) {
         logger.info("GET personInfoLastName called with param : {}", param);

@@ -20,11 +20,14 @@ public class CommunityEmailService {
     }
 
     public List<String> GetEmailsByCity(String city) {
+        // Initialisation de la réponse
         List<String> response = new ArrayList<>();
 
+        // Récupérations de la liste Persons
         logger.debug("Parsing Persons list");
         List<Person> persons = dataRepository.getPersonList();
 
+        // Ajout des emails a la réponse
         logger.debug("Parsing emails");
         persons.forEach(p -> {
             if(Objects.equals(p.getCity(), city)) {

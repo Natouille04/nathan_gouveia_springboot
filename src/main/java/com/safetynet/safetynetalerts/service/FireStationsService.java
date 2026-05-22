@@ -19,6 +19,7 @@ public class FireStationsService {
     }
 
     public boolean save(Firestation firestation) {
+        // On essaye d'enregistrer la station avec le dataRepository
         try {
             logger.debug("Saving fire station to list...");
             dataRepository.addFirestationToList(firestation);
@@ -26,6 +27,7 @@ public class FireStationsService {
             return true;
         }
 
+        // Si il y'a une erreur, on revoie false
         catch (Exception e) {
             logger.error("Error while saving fire station");
             return false;
@@ -33,6 +35,7 @@ public class FireStationsService {
     }
 
     public Firestation update(String address, FireStationUpdateDTO firestation) {
+        // On essaye de modifier la station avec le dataRepository
         try {
             logger.debug("Updating fire station with address '{}'", address);
             dataRepository.updateFireStation(address, firestation);
@@ -45,6 +48,7 @@ public class FireStationsService {
             return updatedFirestation;
         }
 
+        // S'il y a une erreur, on renvoie une Runtime Exception
         catch (Exception e) {
             logger.error("Error while updating fire station");
             throw new RuntimeException(e);
@@ -60,6 +64,7 @@ public class FireStationsService {
             return true;
         }
 
+        // S'il y a une erreur, on renvoie une Runtime Exception
         catch (Exception e) {
             logger.error("Error while deleting fire station");
             throw new RuntimeException(e);

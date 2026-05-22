@@ -18,6 +18,8 @@ public class PersonsController {
         this.personsService = personsService;
     }
 
+    // Endpoint POST /person : Ajoute une personne selon les informations données dans le corps de la requète
+
     @PostMapping("/person")
     public ResponseEntity<Void> createPerson(@RequestBody Person newPerson) {
         logger.info("POST person called with Request body");
@@ -29,6 +31,8 @@ public class PersonsController {
         logger.error("POST ERROR person : Conflict with already existing data");
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
+
+    // Endpoint PATCH /person : Modifie une personne selon les informations données dans le corps de la requète
 
     @PatchMapping("/person")
     public ResponseEntity<Person> updatePerson(
@@ -47,6 +51,8 @@ public class PersonsController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Endpoint DELETE /person : Supprime une personne selon les informations données dans le paramètre de la requète
 
     @DeleteMapping("/person")
     public ResponseEntity<Void> deletePerson(

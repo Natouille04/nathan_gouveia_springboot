@@ -22,6 +22,8 @@ public class CommunityEmailController {
         this.communityEmailService = communityEmailService;
     }
 
+    // Endpoint GET /communityEmail : Retourne une liste d'email des habitant de la ville spécifiée en paramètre
+
     @GetMapping("/communityEmail")
     public List<String> communityEmail(@RequestParam(name = "city", defaultValue = "") String param) {
         logger.info("GET communityEmail called with param : {}", param);
